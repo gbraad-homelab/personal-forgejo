@@ -1,1 +1,18 @@
 FROM ghcr.io/gbraad-homelab/private-base:latest
+
+RUN dnf install -y git git-lfs \
+    && dnf clean all \
+    && rm -rf /var/cache/yum \
+    && curl -fsSL https://codeberg.org/forgejo/forgejo/releases/download/v9.0.3/forgejo-9.0.3-linux-amd64 -o /usr/local/bin/forgejo \
+    && chmod +x /usr/local/bin/forgejo \
+    && curl -fsSL https://codeberg.org/forgejo/forgejo/raw/branch/forgejo/contrib/systemd/forgejo.service -o /etc/systemd/system/forgejo.service \
+    && systemctl enable forgejo.service
+
+RUN groupadd --system git \
+    && useradd --system --shell /bin/bash --comment 'Git Version Control' --gid git --home-dir /home/git --create-home git \
+    && mkdir /var/lib/forgejo \
+    && chown git:git /var/lib/forgejo \
+    && chmod 750 /var/lib/forgejo \
+    && mkdir /etc/forgejo \
+    && chown root:git /etc/forgejo \
+    && chmod 770 /etc/forgejo
