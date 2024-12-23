@@ -1,0 +1,1 @@
+FROM ghcr.io/gbraad-homelab/private-base:latest
