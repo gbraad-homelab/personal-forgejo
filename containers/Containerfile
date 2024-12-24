@@ -1,4 +1,7 @@
-FROM ghcr.io/gbraad-homelab/private-base:latest
+ARG BASE_IMAGE="ghcr.io/gbraad-homelab/private-base"
+ARG BASE_VERSION="latest"
+
+FROM ${BASE_IMAGE}:${BASE_VERSION}
 
 RUN dnf install -y git git-lfs openssh-server \
     && dnf clean all \
