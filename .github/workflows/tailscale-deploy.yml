@@ -1,0 +1,31 @@
+name: tailscale-ssh
+on:
+  workflow_dispatch:
+
+jobs:
+  code-test:
+    runs-on: ubuntu-24.04
+    
+    steps:
+      - name: Remove unwanted stuff
+        uses: gbraad-devenv/remove-unwanted@v1
+      - name: Run system container with `podman`
+        run: |
+          podman run -d --name forgejo --hostname forgejo-${HOSTNAME} --systemd=always --cap-add=NET_RAW --cap-add=NET_ADMIN --cap-add=SYS_ADMIN --device=/dev/net/tun --device=/dev/fuse --cap-add AUDIT_CONTROL ghcr.io/gbraad-homelab/private-forgejo:latest
+      - name: Tailscale setup (root)
+        run: |
+          until podman exec forgejo tailscale up --auth-key ${TAILSCALE_AUTHKEY}
+          do
+              sleep 0.1
+          done
+        env:
+          TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY}}
+      - name: Hang around
+        run: |
+          until podman exec forgejo systemctl is-active --quiet tailscaled
+          do
+               sleep 1
+          done
+          IP=`podman exec forgejo tailscale ip -4`
+          echo "Open in your browser: http://{IP}:3000`"
+          sleep infinity
