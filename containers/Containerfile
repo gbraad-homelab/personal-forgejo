@@ -10,7 +10,8 @@ RUN dnf install -y git git-lfs openssh-server \
     && chmod +x /usr/local/bin/forgejo \
     && curl -fsSL https://codeberg.org/forgejo/forgejo/raw/branch/forgejo/contrib/systemd/forgejo.service -o /etc/systemd/system/forgejo.service \
     && systemctl enable forgejo.service \
-    && systemctl enable sshd.service
+    && systemctl enable sshd.service \
+    && chmod 640 /etc/shadow
 
 RUN groupadd --system git \
     && useradd --system --shell /bin/bash --comment 'Git Version Control' --gid git --home-dir /home/git --create-home git \
