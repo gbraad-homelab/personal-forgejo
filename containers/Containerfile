@@ -6,7 +6,7 @@ FROM ${BASE_IMAGE}:${BASE_VERSION}
 RUN dnf install -y git git-lfs openssh-server \
     && dnf clean all \
     && rm -rf /var/cache/yum \
-    && curl -fsSL https://codeberg.org/forgejo/forgejo/releases/download/v9.0.3/forgejo-9.0.3-linux-amd64 -o /usr/local/bin/forgejo \
+    && curl -fsSL https://codeberg.org/forgejo/forgejo/releases/download/v10.0.0/forgejo-10.0.0-linux-amd64 -o /usr/local/bin/forgejo \
     && chmod +x /usr/local/bin/forgejo \
     && curl -fsSL https://codeberg.org/forgejo/forgejo/raw/branch/forgejo/contrib/systemd/forgejo.service -o /etc/systemd/system/forgejo.service \
     && sed -i 's/HOME=\/home\/git/HOME=\/var\/home\/git/' /etc/systemd/system/forgejo.service \
