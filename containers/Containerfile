@@ -9,6 +9,7 @@ RUN dnf install -y git git-lfs openssh-server \
     && curl -fsSL https://codeberg.org/forgejo/forgejo/releases/download/v9.0.3/forgejo-9.0.3-linux-amd64 -o /usr/local/bin/forgejo \
     && chmod +x /usr/local/bin/forgejo \
     && curl -fsSL https://codeberg.org/forgejo/forgejo/raw/branch/forgejo/contrib/systemd/forgejo.service -o /etc/systemd/system/forgejo.service \
+    && sed -i 's/HOME=\/home\/git/HOME=\/var\/home\/git/' /etc/systemd/system/forgejo.service \
     && systemctl enable forgejo.service \
     && systemctl enable sshd.service \
     && chmod 640 /etc/shadow
