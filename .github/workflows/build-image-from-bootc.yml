@@ -1,10 +1,10 @@
-name: Build ISO from Bootc image
+name: build qcow2 from bootc image
 on:
   workflow_dispatch:
 
 env:
     IMAGE_NAME: ghcr.io/gbraad-homelab/private-forgejo/bootc:latest 
-    DISK_TYPE: anaconda-iso
+    DISK_TYPE: qcow2
     ROOTFS: xfs
     ARCH: amd64
     BIB_IMAGE: quay.io/centos-bootc/bootc-image-builder:latest
@@ -72,4 +72,4 @@ jobs:
         tag: latest
         name: Latest
         body: ${{ env.BODY }}
-        artifacts: "output/bootiso/*.iso"
+        artifacts: "output/bootiso/*.iso,./output/qcow2/*,"
