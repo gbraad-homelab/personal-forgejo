@@ -26,6 +26,7 @@ jobs:
           do
                sleep 1
           done
+          podman exec forgejo tailscale funnel --bg 3000          
           IP=`podman exec forgejo tailscale ip -4`
           echo "Open in your browser: http://${IP}:3000"
           sleep infinity
