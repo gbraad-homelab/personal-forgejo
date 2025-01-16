@@ -13,8 +13,9 @@ RUN dnf install -y git git-lfs openssh-server \
     && systemctl enable sshd.service \
     && chmod 640 /etc/shadow
 
-RUN groupadd --system git \
-    && useradd --system --shell /bin/bash --comment 'Git Version Control' --gid git --home-dir /home/git --create-home git \
+RUN mkdir -p /var/home/ \
+    && groupadd --system git \
+    && useradd --system --shell /bin/bash --comment 'Git Version Control' --gid git --home-dir /var/home/git --create-home git \
     && mkdir /var/lib/forgejo \
     && chown git:git /var/lib/forgejo \
     && chmod 750 /var/lib/forgejo \
