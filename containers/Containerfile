@@ -3,6 +3,16 @@ ARG BASE_VERSION="latest"
 
 FROM ${BASE_IMAGE}:${BASE_VERSION}
 
+# Create a default 'admin' user with the specified password.
+# Add it to the 'wheel' group to allow for running sudo commands.
+ARG ADMIN_PASSWD
+# hadolint ignore=DL4006
+RUN if [ -z "${ADMIN_PASSWD}" ] ; then \
+        echo "ADMIN_PASSWD is a mandatory build argument" && exit 1 ; \
+    fi \
+    && useradd -m -d /var/home/admin -G wheel admin \
+    && echo "admin:${ADMIN_PASSWD}" | chpasswd
+
 RUN dnf install -y git git-lfs openssh-server \
     && dnf clean all \
     && rm -rf /var/cache/yum \
@@ -12,9 +22,8 @@ RUN dnf install -y git git-lfs openssh-server \
     && sed -i 's/HOME=\/home\/git/HOME=\/var\/home\/git/' /etc/systemd/system/forgejo.service \
     && systemctl enable forgejo.service \
     && systemctl enable sshd.service \
-    && chmod 640 /etc/shadow
-
-RUN mkdir -p /var/home/ \
+    && chmod 640 /etc/shadow \
+    && mkdir -p /var/home/ \
     && groupadd --system git \
     && useradd --system --shell /bin/bash --comment 'Git Version Control' --gid git --home-dir /var/home/git --create-home git \
     && mkdir /var/lib/forgejo \

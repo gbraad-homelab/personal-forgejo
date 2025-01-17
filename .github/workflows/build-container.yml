@@ -14,6 +14,11 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: Run podman build - base
-        run: podman build -t ghcr.io/gbraad-homelab/forgejo:latest -f containers/Containerfile .
+        run: |
+          podman build -t ghcr.io/gbraad-homelab/forgejo:latest \
+            --build-arg=ADMIN_PASSWD="password" \
+            -f containers/Containerfile .
       - name: Push image to ghcr.io - base
-        run: podman push --creds=${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} ghcr.io/gbraad-homelab/forgejo:latest
+        run: |
+          podman push --creds=${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} \
+            ghcr.io/gbraad-homelab/forgejo:latest
