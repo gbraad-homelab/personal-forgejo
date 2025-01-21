@@ -1,5 +1,5 @@
-name: build containers
-run-name: building containers
+name: build container
+run-name: building container
 on:
   workflow_dispatch:
 jobs:
