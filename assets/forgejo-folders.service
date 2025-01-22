@@ -5,8 +5,8 @@ Requires=forgejo.service
 
 [Service]
 Type=simple
-ExecStartPre=-/usr/bin/mkdir -p /var/lib/forgejo
-ExecStart=/usr/bin/chown git:git /var/lib/forgejo
+ExecStartPre=-/usr/bin/mkdir -p /var/lib/forgejo /var/home/git
+ExecStart=/usr/bin/chown git:git /var/lib/forgejo /var/home/git
 Restart=on-abort
 
 [Install]
