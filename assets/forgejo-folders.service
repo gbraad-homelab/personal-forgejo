@@ -1,0 +1,13 @@
+[Unit]
+Description=Ensure Forgejo folders exist
+Before=forgejo.service
+
+[Service]
+Type=simple
+ExecStartPre=-/usr/bin/mkdir -p /var/lib/forgejo
+ExecStart=/usr/bin/chown git:git /var/lib/forgejo
+Restart=on-abort
+
+
+[Install]
+WantedBy=multi-user.target

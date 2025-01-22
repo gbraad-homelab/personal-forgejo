@@ -3,6 +3,8 @@ ARG BASE_VERSION="latest"
 
 FROM ${BASE_IMAGE}:${BASE_VERSION}
 
+COPY assets/forgejo-folders.service /etc/systemd/system/
+
 RUN dnf install -y git git-lfs openssh-server \
     && dnf clean all \
     && rm -rf /var/cache/yum \
@@ -11,6 +13,7 @@ RUN dnf install -y git git-lfs openssh-server \
     && curl -fsSL https://codeberg.org/forgejo/forgejo/raw/branch/forgejo/contrib/systemd/forgejo.service -o /etc/systemd/system/forgejo.service \
     && sed -i 's/HOME=\/home\/git/HOME=\/var\/home\/git/' /etc/systemd/system/forgejo.service \
     && systemctl enable forgejo.service \
+    && systemctl enable forgejo-folders.service \
     && systemctl enable sshd.service \
     && chmod 640 /etc/shadow \
     && mkdir -p /var/home/ \
