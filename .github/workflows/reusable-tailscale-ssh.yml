@@ -56,5 +56,5 @@ jobs:
           done
           podman exec remote tailscale funnel --bg 3000
           IP=`podman exec remote tailscale ip -4`
-          echo "Open in your web browser: https://${IP}:3000"
+          echo "Open in your web browser: http://${IP}:3000"
           sleep infinity
