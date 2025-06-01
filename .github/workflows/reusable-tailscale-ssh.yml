@@ -1,0 +1,60 @@
+name: tailscale-ssh
+
+on:
+  workflow_call:
+    inputs:
+      image:
+        description: "Container image to run"
+        required: true
+        type: string
+      runs-on:
+        description: "Target runner"
+        required: true
+        type: string
+        default: "ubuntu-latest"
+      hostname:
+        description: "Hostname for container image"
+        required: false
+        type: string
+        default: "remote"
+
+jobs:
+  remote-test:
+    runs-on: ${{ inputs.runs-on }}
+    
+    steps:
+
+      - name: Enable linger and start user session (workaround)
+        uses: gbraad-actions/blacksmith-user-session@main
+
+      - name: WarpBuild Unprivileged userns (workaround)
+        uses: gbraad-actions/warpbuild-unprivileged-userns@main
+
+      - name: Run system container with `podman`
+        run: |
+          podman run -d --name remote --hostname ${{ inputs.hostname }} \
+            --privileged \
+            --cap-add=NET_ADMIN --cap-add=NET_RAW --device=/dev/net/tun --device=/dev/fuse \
+            --cap-add AUDIT_CONTROL \
+            ${{ inputs.image }}
+      - name: Tailscale setup (root)
+        run: |
+          until podman exec remote tailscale up --auth-key ${TAILSCALE_AUTHKEY} --hostname ${{ inputs.hostname }}
+          do
+              sleep 0.1
+          done
+          #podman exec remote tailscale set --ssh
+          podman exec remote chmod 640 /etc/shadow
+        env:
+          TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY}}
+
+      - name: Hang around
+        run: |
+          until podman exec remote systemctl is-active tailscaled
+          do
+               sleep 1
+          done
+          podman exec remote tailscale funnel --bg 3000
+          IP=`podman exec remote tailscale ip -4`
+          echo "Open in your web browser: https://${IP}:3000"
+          sleep infinity

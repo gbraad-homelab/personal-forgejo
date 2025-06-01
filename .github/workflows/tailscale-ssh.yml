@@ -1,0 +1,14 @@
+name: tailscale-ssh
+
+on:
+  workflow_dispatch:
+
+jobs:
+  remote-test:
+    name: Tailscale SSH Machine - GitHub
+    uses: ./.github/workflows/reusable-tailscale-ssh.yml
+    with:
+      runs-on: "ubuntu-latest"
+      image: "ghcr.io/gbraad-homelab/forgejo:latest"
+      hostname: "homelab-forgejo"
+    secrets: inherit

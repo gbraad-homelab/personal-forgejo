@@ -1,0 +1,14 @@
+name: tailscale-ssh-blacksmith
+
+on:
+  workflow_dispatch:
+
+jobs:
+  remote-test:
+    name: Tailscale SSH Machine - Blacksmith
+    uses: ./.github/workflows/reusable-tailscale-ssh.yml
+    with:
+      runs-on: "blacksmith-2vcpu-ubuntu-2404"
+      image: "ghcr.io/gbraad-homelab/forgejo:latest"
+      hostname: "homelab-forgejo"
+    secrets: inherit
